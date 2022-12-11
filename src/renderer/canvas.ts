@@ -10,11 +10,15 @@ export class CanvasManipuilator {
     private centerX: number
     private centerY: number
 
-    private edge: number = 600
+    private edge: number = 750
 
     private recursionLevel: number = 5
 
-    constructor(identifier: string, regular: boolean = true) {
+    private circlesEnabled: boolean = true
+    private counter = 0
+    private rotation = 0
+
+    constructor(identifier: string) {
         this.canvas = document.getElementById(identifier) as HTMLCanvasElement
         this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
         this.eMath = new EMath()
@@ -31,14 +35,20 @@ export class CanvasManipuilator {
         // If not then it is an irregular triangle and we need the three points
     }
 
-    private drawSomeCrazyStuff() {}
-
     /**
      * A small helper to generate three points to begin with if no coordinates are given
      */
     private generateDefaultPoints() {
-        const firstPoint = { x: this.centerX, y: this.centerY }
-        const secondPoint = { x: this.centerX + this.edge, y: this.centerY }
+        const firstPoint = {
+            x: this.centerX,
+            y: this.centerY - this.edge / Math.sqrt(3), // edge/sqrt(3) up
+        }
+        const secondPoint = this.eMath.rotateCoordinate(
+            firstPoint,
+            -120,
+            this.centerX,
+            this.centerY
+        )
         const thirdPoint = this.eMath.rotateCoordinate(
             secondPoint,
             -60,
@@ -52,20 +62,25 @@ export class CanvasManipuilator {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
 
-        const encirclingRadius = this.edge / (2 * Math.cos(Math.PI / 6))
-
-        this.centerX =
-            this.canvas.width / 2 - encirclingRadius * Math.SQRT1_2 - 40
-        this.centerY = this.canvas.height / 2 + encirclingRadius * Math.SQRT1_2
+        this.centerX = this.canvas.width / 2
+        this.centerY = this.canvas.height / 2
     }
 
     private render(coordinates: Coordinates[], recursionLevel: number) {
         if (!recursionLevel) return
+        // Translate coordinates by angle
         this.drawTriangle(coordinates)
         // Find the three smaller triangles now
         const point01 = this.eMath.midpoint(coordinates[0], coordinates[1])
         const point12 = this.eMath.midpoint(coordinates[1], coordinates[2])
         const point20 = this.eMath.midpoint(coordinates[2], coordinates[0])
+
+        // Also draw concentric circles maybe?
+        if (this.circlesEnabled) this.drawConcentricCircles(coordinates[0])
+        if (this.circlesEnabled) this.drawConcentricCircles(coordinates[1])
+        if (this.circlesEnabled) this.drawConcentricCircles(coordinates[2])
+
+        this.counter += Math.PI / this.recursionLevel
 
         this.render([coordinates[0], point01, point20], recursionLevel - 1)
         this.render([point01, coordinates[1], point12], recursionLevel - 1)
@@ -96,26 +111,54 @@ export class CanvasManipuilator {
         )}%, ${Math.floor(Math.random() * 99)}%)`
     }
 
+    private drawConcentricCircles(coordinate: Coordinates) {
+        let tries = 5
+        let originalTries = 5
+        const maxRadius = 20
+        while (tries--) {
+            this.drawCircle(
+                coordinate.x,
+                coordinate.y,
+                (maxRadius * tries) / originalTries
+            )
+        }
+    }
+
     private drawCircle(
         x: number,
         y: number,
         radius: number,
-        strokeStyle: string = '#fff',
-        fillStyle: string = '#fff'
+        strokeStyle: string = '#000'
     ) {
         this.context.beginPath()
-        this.context.moveTo(x + radius, y)
-        this.context.arc(x, y, radius, 0, 2 * Math.PI)
+        // this.context.moveTo(x + radius, y)
+        this.context.arc(
+            x,
+            y,
+            radius,
+            this.counter,
+            this.counter + (Math.PI * 3) / 4
+        )
         this.context.strokeStyle = strokeStyle
-        this.context.fillStyle = fillStyle
         this.context.stroke()
-        this.context.fill()
     }
 
     private animate() {
-        this.render(this.coordinates, this.recursionLevel)
-
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        this.render(
+            this.coordinates.map((c) =>
+                this.eMath.rotateCoordinate(
+                    c,
+                    this.rotation,
+                    this.canvas.width / 2,
+                    this.canvas.height / 2
+                )
+            ),
+            this.recursionLevel
+        )
+        this.rotation += Math.PI / this.recursionLevel
         let fps = 30
+
         setTimeout(() => {
             requestAnimationFrame(this.animate.bind(this))
         }, 1000 / fps)
