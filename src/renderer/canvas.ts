@@ -80,7 +80,8 @@ export class CanvasManipuilator {
         if (this.circlesEnabled) this.drawConcentricCircles(coordinates[1])
         if (this.circlesEnabled) this.drawConcentricCircles(coordinates[2])
 
-        this.counter += Math.PI / this.recursionLevel
+        this.counter =
+            (this.counter + Math.PI / this.recursionLevel) % (2 * Math.PI)
 
         this.render([coordinates[0], point01, point20], recursionLevel - 1)
         this.render([point01, coordinates[1], point12], recursionLevel - 1)
@@ -156,7 +157,8 @@ export class CanvasManipuilator {
             ),
             this.recursionLevel
         )
-        this.rotation += Math.PI / this.recursionLevel
+        this.rotation =
+            (this.rotation + Math.PI / this.recursionLevel) % (Math.PI * 2)
         let fps = 30
 
         setTimeout(() => {
