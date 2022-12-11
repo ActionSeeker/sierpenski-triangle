@@ -10,7 +10,7 @@ export class CanvasManipuilator {
     private centerX: number
     private centerY: number
 
-    private edge: number = 750
+    private edge: number = 600
 
     private recursionLevel: number = 5
 
