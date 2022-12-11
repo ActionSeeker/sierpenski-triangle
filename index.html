@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Plot</title>
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'"
+        />
+        <meta
+            http-equiv="X-Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="stylesheets/sanitize.css"
+        />
+    </head>
+
+    <body>
+        <canvas id="visualisation"></canvas>
+        <script src=" ./dist/bundle.js" defer></script>
+    </body>
+</html>
