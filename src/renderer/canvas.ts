@@ -10,13 +10,17 @@ export class CanvasManipuilator {
     private centerX: number
     private centerY: number
 
-    private edge: number = 600
-
+    private edge: number = 700
     private recursionLevel: number = 5
 
     private circlesEnabled: boolean = true
     private counter = 0
     private rotation = 0
+
+    // noise
+    private imageData: ImageData
+    private buffer32: Uint32Array
+    private littleEndian: boolean
 
     constructor(identifier: string) {
         this.canvas = document.getElementById(identifier) as HTMLCanvasElement
@@ -28,15 +32,12 @@ export class CanvasManipuilator {
 
         this.generateDefaultPoints()
 
+        this.initNoise()
         this.animate()
-        // this.render(this.coordinates, this.recursionLevel)
-
-        // regular=true necessiates traingle to be equilateral
-        // If not then it is an irregular triangle and we need the three points
     }
 
     /**
-     * A small helper to generate three points to begin with if no coordinates are given
+     * A small helper to generate three points to begin with
      */
     private generateDefaultPoints() {
         const firstPoint = {
@@ -143,8 +144,37 @@ export class CanvasManipuilator {
         this.context.stroke()
     }
 
+    private initNoise() {
+        this.imageData = this.context.createImageData(
+            this.canvas.width,
+            this.canvas.height
+        )
+        this.buffer32 = new Uint32Array(this.imageData.data.buffer)
+        this.littleEndian = this.isLittleEndian()
+    }
+
+    private drawNoise() {
+        // 0xAABBRRGG : 0xRRGGBBAA;
+        const black = this.littleEndian ? 0x90000000 : 0x00000090
+        // const blue = LE ? 0xffff0000 : 0x0000ffff
+        const white = this.littleEndian ? 0xffffffff : 0xffffffff
+        for (let i = 0, len = this.buffer32.length; i < len; i++)
+            this.buffer32[i] = Math.random() < 0.5 ? black : white
+
+        this.context.putImageData(this.imageData, 0, 0)
+    }
+
+    private isLittleEndian() {
+        const uint8 = new Uint8Array(8)
+        const uint32 = new Uint32Array(uint8.buffer)
+        uint8[0] = 255
+        return uint32[0] === 0xff
+    }
+
     private animate() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        this.drawNoise()
+
         this.render(
             this.coordinates.map((c) =>
                 this.eMath.rotateCoordinate(
@@ -169,6 +199,7 @@ export class CanvasManipuilator {
     private addResizeEventListener() {
         window.addEventListener('resize', () => {
             this.strechCanvasToViewPort()
+            this.drawNoise()
             this.render(this.coordinates, this.recursionLevel)
         })
     }
