@@ -1,7 +1,7 @@
 import Coordinates from '../interfaces/coordinates'
 import EMath from './extended-math'
-import { NoiseRenderer } from './noise-renderer'
-import { TriangleRenderer } from './triangle-renderer'
+import { NoiseRenderer } from './figures/noise-renderer'
+import { TriangleRenderer } from './figures/triangle-renderer'
 
 export class CanvasManipuilator {
     private canvas: HTMLCanvasElement

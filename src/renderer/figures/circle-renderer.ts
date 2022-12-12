@@ -1,4 +1,4 @@
-import Coordinates from '../interfaces/coordinates'
+import Coordinates from '../../interfaces/coordinates'
 
 export class CircleRenderer {
     constructor(
