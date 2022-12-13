@@ -24,9 +24,9 @@
     "author": "Luv Karakoti",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/ActionSeeker/freedom-poem-visualisation/issues"
+        "url": "https://github.com/ActionSeeker/sierpinski-triangle/issues"
     },
-    "homepage": "https://github.com/ActionSeeker/freedom-poem-visualisation#readme",
+    "homepage": "https://github.com/ActionSeeker/sierpinski-triangle#readme",
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
