@@ -1,14 +1,12 @@
 export class NoiseRenderer {
+    private canvas: HTMLCanvasElement
     private imageData: ImageData
     private buffer32: Uint32Array
     private littleEndian: boolean
 
-    constructor(
-        private canvas: HTMLCanvasElement,
-        private context: CanvasRenderingContext2D
-    ) {
-        this.canvas = canvas
+    constructor(private context: CanvasRenderingContext2D) {
         this.context = context
+        this.canvas = context.canvas
 
         this.imageData = this.context.createImageData(
             this.canvas.width,
@@ -33,7 +31,6 @@ export class NoiseRenderer {
         const white = this.littleEndian ? 0xffffffff : 0xffffffff
         for (let i = 0, len = this.buffer32.length; i < len; i++)
             this.buffer32[i] = Math.random() < 0.2 ? white : black
-
         this.context.putImageData(this.imageData, 0, 0)
     }
 }

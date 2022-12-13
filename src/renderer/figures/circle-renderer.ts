@@ -24,6 +24,7 @@ export class CircleRenderer {
             this.counter,
             this.counter + (Math.PI * 3) / 4
         )
+        this.context.lineWidth = 1.5
         this.context.strokeStyle = strokeStyle
         this.context.stroke()
     }

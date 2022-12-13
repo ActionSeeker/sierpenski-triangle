@@ -1,6 +1,7 @@
 import Coordinates from '../interfaces/coordinates'
 import EMath from './extended-math'
 import { NoiseRenderer } from './figures/noise-renderer'
+import { SineRenderer } from './figures/sine-renderer'
 import { TriangleRenderer } from './figures/triangle-renderer'
 
 export class CanvasManipuilator {
@@ -10,6 +11,10 @@ export class CanvasManipuilator {
     private eMath: EMath
     private noiseRenderer: NoiseRenderer
     private triangleRenderer: TriangleRenderer
+
+    private sineRenderer: SineRenderer
+    private sineRenderer2: SineRenderer
+    private sineRenderer3: SineRenderer
 
     private coordinates: Coordinates[] = []
     private centerX: number
@@ -24,8 +29,26 @@ export class CanvasManipuilator {
         this.addResizeEventListener()
 
         this.eMath = new EMath()
-        this.noiseRenderer = new NoiseRenderer(this.canvas, this.context)
+        this.noiseRenderer = new NoiseRenderer(this.context)
         this.triangleRenderer = new TriangleRenderer(this.context)
+
+        this.sineRenderer = new SineRenderer(this.context, 2)
+        this.sineRenderer2 = new SineRenderer(
+            this.context,
+            5,
+            30,
+            '#FF0000',
+            0.5,
+            400
+        )
+        this.sineRenderer3 = new SineRenderer(
+            this.context,
+            6,
+            -60,
+            '#ADC5CE',
+            0.5,
+            400
+        )
 
         this.generateDefaultPoints()
         this.animate()
@@ -65,6 +88,10 @@ export class CanvasManipuilator {
     private animate() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.noiseRenderer.render()
+
+        this.sineRenderer2.render()
+        this.sineRenderer3.render()
+
         this.triangleRenderer.render(
             this.coordinates.map((c) =>
                 this.eMath.rotateCoordinate(
@@ -75,6 +102,7 @@ export class CanvasManipuilator {
                 )
             )
         )
+        this.sineRenderer.render()
 
         this.rotation =
             this.rotation + Math.PI / this.triangleRenderer.getRecursionLevel()

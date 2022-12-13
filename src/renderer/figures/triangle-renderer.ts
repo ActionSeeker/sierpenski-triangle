@@ -65,6 +65,7 @@ export class TriangleRenderer {
         const color = this.generateRandomColour()
 
         this.context.strokeStyle = color
+        this.context.lineWidth = 1
         this.context.fillStyle = color
         this.context.stroke()
         this.context.fill()
