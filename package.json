@@ -28,8 +28,6 @@
     },
     "homepage": "https://github.com/ActionSeeker/freedom-poem-visualisation#readme",
     "devDependencies": {
-        "@types/dat.gui": "^0.7.7",
-        "@types/three": "^0.146.0",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
         "electron": "^22.0.0",
@@ -41,10 +39,6 @@
         "webpack": "^5.73.0",
         "webpack-cli": "^4.10.0",
         "webpack-node-externals": "^3.0.0"
-    },
-    "dependencies": {
-        "dat.gui": "^0.7.9",
-        "three": "^0.146.0"
     },
     "husky": {
         "hooks": {
